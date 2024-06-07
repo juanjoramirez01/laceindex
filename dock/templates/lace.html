@@ -1,0 +1,121 @@
+{% include 'navbar.html' %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LACE Index CalculatoR</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0; /* Color de fondo suave */
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff; /* Fondo blanco */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333; /* Color de texto oscuro */
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: #666; /* Color de texto gris */
+        }
+
+        input, select {
+            margin-bottom: 15px;
+            padding: 8px;
+            border: 1px solid #ccc; /* Borde gris */
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            background-color: #677bed; /* Verde */
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #2500f7; /* Verde más oscuro al pasar el ratón */
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f9f9f9; /* Fondo gris claro */
+            border-radius: 8px;
+        }
+
+        .result h2 {
+            margin-bottom: 10px;
+            color: #333; /* Color de texto oscuro */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>LACE Index Calculator</h1>
+        <form id="laceForm" action="/api/v1/manual_lace" method="post">
+            <label for="enfermedades">Conditions (separated by commas):</label>
+            <input type="text" id="enfermedades" name="enfermedades">
+
+            <label for="lengthStayDays">Length of hospital stay in days:</label>
+            <input type="number" id="lengthStayDays" name="lengthStayDays">
+
+            <label for="admissionAcuity">Was the admission an emergency?</label>
+            <select id="admissionAcuity" name="admissionAcuity">
+                <option value="1">No</option>
+                <option value="2">Sí</option>
+            </select>
+
+            <label for="emergencyVisits">Number of emergency visits in the last 6 months:</label>
+            <input type="number" id="emergencyVisits" name="emergencyVisits">
+
+            <input type="submit" value="Calculate LACE Index">
+        </form>
+
+        <div id="laceResult" class="result" style="display:none;">
+            <h2>LACE Index Result:</h2>
+            <p><strong>Lace score:</strong> <span id="laceScore"></span></p>
+            <p><strong>Readmission risk:</strong> <span id="riskLevel"></span></p>
+            <p><strong>Charlson Index:</strong> <span id="charlsonScore"></span></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("laceForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            fetch("/api/v1/manual_lace", {
+                method: "POST",
+                body: new FormData(event.target)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("laceScore").textContent = data["Lace score"];
+                document.getElementById("riskLevel").textContent = data["risk_level"];
+                document.getElementById("charlsonScore").textContent = data["charlson_score"];
+                document.getElementById("laceResult").style.display = "block";
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+</body>
+</html>
