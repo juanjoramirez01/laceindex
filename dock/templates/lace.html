@@ -74,8 +74,8 @@
     <div class="container">
         <h1>LACE Index Calculator</h1>
         <form id="laceForm" action="/api/v1/manual_lace" method="post">
-            <label for="enfermedades">Conditions (separated by commas):</label>
-            <input type="text" id="enfermedades" name="enfermedades">
+            <label for="diseases">Conditions (separated by commas):</label>
+            <input type="text" id="diseases" name="diseases">
 
             <label for="lengthStayDays">Length of hospital stay in days:</label>
             <input type="number" id="lengthStayDays" name="lengthStayDays">
@@ -83,7 +83,7 @@
             <label for="admissionAcuity">Was the admission an emergency?</label>
             <select id="admissionAcuity" name="admissionAcuity">
                 <option value="1">No</option>
-                <option value="2">Sí</option>
+                <option value="2">Yes</option>
             </select>
 
             <label for="emergencyVisits">Number of emergency visits in the last 6 months:</label>
