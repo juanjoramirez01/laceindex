@@ -189,6 +189,8 @@ def process_file(file_path):
     # Guardar el DataFrame procesado en una variable global
     global df2_clean_global
     df2_clean_global = df2_clean_filtered
+    return df2_clean_filtered.to_dict(orient='records')
+
 
 @app.route('/api/v1/lace', methods=['GET'])
 def get_lace():
@@ -197,6 +199,24 @@ def get_lace():
         return jsonify(df2_clean_global.to_dict(orient='records'))
     else:
         return jsonify({"error": "No data processed"})
+
+@app.route('/api/v1/upload_lace', methods=['POST'])
+def upload_lace():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part in the request"}), 400
+    
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    
+    try:
+        # Procesa el archivo y calcula el índice LACE
+        lace_results = process_file(file)
+        return jsonify(lace_results)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 # Página de ingreso manual de datos
 @app.route('/manual')
